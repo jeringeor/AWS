@@ -1,0 +1,113 @@
+
+# 🔐 IAM – Interview Notes
+
+### 1. What is **Authentication**?
+**Answer:**
+* Process of **verifying identity** (Who are you?).
+* Example: Username + Password, MFA, Access Keys.
+### 2. What is **Authorization**?
+**Answer:**
+* Process of **granting permissions** (What can you do?).
+* Example: User authenticated but only allowed to access S3 bucket, not EC2.
+### 3. Difference between **Authentication vs Authorization**?
+**Answer:**
+| Authentication               | Authorization                      |
+| ----------------------------.| ----------------------------------.|
+| Identity verification        | Access control                     |
+| Happens **first**            | Happens **after authentication**   |
+| Example: Login with password | Example: View only vs Admin access |
+### 4. What is an **IAM User**?
+**Answer:**
+* A digital identity with **long-term credentials** (username, password, access keys).
+* Represents a person, app, or service needing direct access to AWS.
+* Each user has **individual permissions**.
+### 5. What is an **IAM Group**?
+**Answer:**
+* A **collection of users** in IAM.
+* Used to manage permissions for multiple users together.
+* Example: *Developers Group* → All devs get same policy.
+### 6. What is an **IAM Role**?
+**Answer:**
+* A **temporary identity** with a set of permissions.
+* Can be assumed by **users, services, or applications**.
+* No long-term credentials → uses temporary tokens (STS).
+* Example: EC2 instance role to access S3 without storing keys.
+### 7. What is an **IAM Policy**?
+**Answer:**
+* A **JSON document** that defines permissions (Allow/Deny).
+* Attached to users, groups, or roles.
+* Example:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": "s3:*",
+    "Resource": "*"
+  }]
+}
+```
+### 8. Difference between **User vs Role**?
+**Answer:**
+* **User** → Long-term credentials, tied to a person/app.
+* **Role** → Temporary credentials, assumed when needed.
+### 9. Best Practices for IAM?
+**Answer:**
+* Follow **least privilege principle**.
+* Use **groups** to manage permissions.
+* Use **roles instead of long-term keys**.
+* Enable **MFA** for sensitive accounts.
+* Regularly review IAM policies.
+
+steps to create user
+users>> add user >> password >> attach policies or add to group or role
+
+authorizations (permissions)
+iam >> users >> select user >> add policies >> select custom or aws managed >>
+
+groups 
+IAM >> user groups >> name >> policies >> 
+
+# 📝 IAM – Step by Steps
+### 1. **Create a User**
+1. Go to **IAM Console** → **Users** → **Add user**
+2. Enter **username**
+3. Choose **access type**:
+   * ✅ Password (for console access)
+   * ✅ Access key (for programmatic access: CLI/SDK)
+4. Assign permissions:
+   * Attach policies directly **OR**
+   * Add user to a **Group** with policies **OR**
+   * Assign a **Role**
+1. Review & **Create user**
+### 2. **Add Authorization (Permissions) to User**
+1. IAM Console → **Users** → Select User
+2. Go to **Permissions** tab → **Add permissions**
+3. Options:
+   * Attach AWS **Managed Policy** (e.g., `AmazonS3ReadOnlyAccess`)
+   * Create/attach **Custom Policy**
+   * Add user to **Group** with permissions
+4. Save changes
+### 3. **Create a Group**
+1. IAM Console → **User Groups** → **Create group**
+2. Enter **Group name**
+3. Attach **Policies** to group (AWS managed or custom)
+4. Add users to group
+5. Done ✅
+### 4. **Create a Role**
+1. IAM Console → **Roles** → **Create role**
+2. Choose **Trusted entity**:
+   * AWS Service (e.g., EC2, Lambda)
+   * Another AWS Account
+   * Web identity or SAML federation
+3. Attach **Policies** (permissions for the role)
+4. Name the role & create it
+5. Assign role to service (e.g., attach EC2 role when launching instance)
+### 5. **Attach a Policy (General Flow)**
+* Go to **IAM → Users/Groups/Roles**
+* Select the entity
+* **Attach Policy** → Choose:
+  * AWS **Managed Policy** (predefined by AWS)
+  * **Customer Managed Policy** (your custom JSON)
+  * **Inline Policy** (applies only to one user/group/role)
